@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sonarqube
+  namespace: operations
+  labels:
+    run: sonarqube
+    namespace: operations
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: sonarqube
+  template:
+    metadata:
+      labels:
+        run: sonarqube
+        namespace: operations
+    spec:
+      containers:
+      - name: sonarqube
+        image: sonarqube:7.4-community
+        imagePullPolicy: Always 
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        - containerPort: 9092
+        env:
+        - name: SONARQUBE_JDBC_USERNAME
+          value: sonar
+        - name: SONARQUBE_JDBC_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: sonarqube
+              key: password
+        - name: SONARQUBE_JDBC_URL
+          value: jdbc:postgresql://toolbox/sonar
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: 1
+          limits:
+            memory: "2Gi"
+            cpu: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube
+  namespace: operations
+spec:
+  selector:
+    run: sonarqube
+  ports:
+    - name: ui-port
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+      nodePort: 30900
+    - name: ssl-ui-port
+      protocol: TCP
+      port: 9001
+      targetPort: 9001
+      nodePort: 30901
+    - name: extra-port
+      protocol: TCP
+      port: 9092
+      targetPort: 9092
+      nodePort: 30992
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sonarqube-ui
+  namespace: operations
+spec:
+  selector:
+    run: sonarqube
+  ports:
+    - name: ui-port
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+  type: ClusterIP
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: sonarqube
+  namespace: operations
+spec:
+  rules:
+    - host: sonarqube.eniworks.net
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: sonarqube-ui
+              servicePort: 9000

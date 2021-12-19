@@ -1,0 +1,54 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: matrix
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: operations
+    server: https://kubernetes.default.svc
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /spec/template/spec/containers/0/startupProbe
+  source:
+    repoURL: "https://dacruz21.github.io/helm-charts"
+    targetRevision: "2.7.0"
+    chart: matrix
+    helm:
+      parameters:
+        - name: postgresql.password
+          value: not_real_value_wont_work_override
+        - name: coturn.service.type
+          value: ClusterIP
+        - name: coturn.enabled
+          value: 'false'
+        - name: ingress.hosts.federation
+          value: matrix-fed.eniworks.net
+        - name: ingress.hosts.riot
+          value: element.eniworks.net
+        - name: ingress.hosts.synapse
+          value: matrix.eniworks.net
+        - name: mail.external.host
+          value: '10.1.1.1'
+        - name: mail.external.requireTransportSecurity
+          value: 'false'
+        - name: matrix.serverName
+          value: eniworks.net
+        - name: postgresql.enabled
+          value: 'false'
+        - name: postgresql.hostname
+          value: '10.1.1.1'
+        - name: postgresql.username
+          value: matrix
+        - name: riot.enabled
+          value: 'false'
+        - name: matrix.registration.enabled
+          value: 'false'
+        - name: matrix.registration.allowGuests
+          value: 'false'
+        - name: matrix.registration.sharedSecret
+        - name: matrix.adminEmail
+          value: 'example@email.com'

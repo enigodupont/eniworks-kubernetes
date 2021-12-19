@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: operations
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: 'https://helm.traefik.io/traefik'
+    targetRevision: 10.7.1
+    chart: traefik
+    helm:
+      parameters:
+        - name: deployment.replicas
+          value: '2'
+        - name: service.type
+          value: NodePort
+        - name: ingressClass.enabled
+          value: 'true'
+        - name: ingressClass.isDefaultClass
+          value: 'true'
+        - name: ports.web.nodePort
+          value: '32714'
+        - name: providers.kubernetesIngress.enabled
+          value: 'true'
+        - name: providers.kubernetesCRD.enabled
+          value: 'true'
+        - name: ingressRoute.dashboard.enabled
+          value: 'false'
+        - name: additionalArguments[0]
+          value: '--serversTransport.insecureSkipVerify=true'

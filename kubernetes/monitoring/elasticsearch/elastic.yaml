@@ -1,0 +1,29 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: logs
+spec:
+  version: 7.16.2
+  nodeSets:
+  - name: default
+    count: 3
+    podTemplate:
+      spec:
+        securityContext:
+          runAsUser: 1003 # Set to elastic on FreeNAS
+          fsGroup: 1003 
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 15Gi
+          storageClassName: nfs-client
+    config:
+      # most Elasticsearch configuration parameters are possible to set, e.g: node.attr.attr_name: attr_value
+      node.roles: ["master", "data", "ingest", "ml"]
+      # this allows ES to run on nodes even if their vm.max_map_count has not been increased, at a performance cost
+      node.store.allow_mmap: false

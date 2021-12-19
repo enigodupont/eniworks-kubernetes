@@ -1,0 +1,59 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitlab
+  namespace: operations
+spec:
+  destination:
+    namespace: gitlab
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: "https://charts.gitlab.io/"
+    targetRevision: "5.1.1"
+    chart: gitlab
+    helm:
+      values: |-
+        upgradeCheck:
+          enabled: false
+        global:
+          hosts:
+            domain: eniworks.net
+            externalIP: "EXAMPLE"
+          ingress:
+            class: traefik
+            provider: traefik
+            configureCertmanager: false
+            tls:
+              enabled: false
+          psql:
+            host: toolbox
+            password:
+              secret: gitlab-db
+              key: postgresql-password
+          smtp:
+            enabled: true
+            address: toolbox
+            port: 25
+            authentication: ""
+          timezone: CST
+          appConfig:
+            ldap:
+              servers:
+                toolbox:
+                  label: 'toolbox'
+                  host: "toolbox"
+                  port: 389
+                  uid: cn
+          grafana:
+            enabled: false
+        certmanager-issuer:
+          email: example@email.com
+        nginx-ingress:
+          enabled: false
+        postgresql:
+          install: false
+        prometheus:
+          install: false
+          rbac:
+            create: false
+  project: infra

@@ -1,0 +1,41 @@
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: apps
+  labels:
+    name: apps
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: operations
+  labels:
+    name: operations
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: monitoring
+  labels:
+    name: monitoring
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: games
+  labels:
+    name: games
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: media
+  labels:
+    name: media
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: poc
+  labels:
+    name: poc

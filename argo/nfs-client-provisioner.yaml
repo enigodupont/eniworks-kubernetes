@@ -1,0 +1,22 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nfs-client-provisioner
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: operations
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: 'https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner'
+    targetRevision: 4.0.14
+    chart: nfs-subdir-external-provisioner
+    helm:
+      parameters:
+        - name: nfs.path
+          value: /mnt/babel/Kubernetes/nfs-client-provisioner
+        - name: nfs.server
+          value: towerofbabel
+        - name: storageClass.defaultClass
+          value: "true"

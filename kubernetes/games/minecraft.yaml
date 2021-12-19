@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft
+  namespace: games
+  labels:
+    run: minecraft
+    namespace: games
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: minecraft
+  template:
+    metadata:
+      labels:
+        run: minecraft
+        namespace: games
+    spec:
+      volumes:
+        - name: minecraft-data
+          flexVolume:
+            driver: "microsoft.com/smb"
+            secretRef:
+              name: minecraft-creds
+            options:
+              source: "//towerofbabel/minecraft"
+      containers:
+        - name: minecraft
+          # It didn't like the sha, can fix later.
+          image: phyremaster/papermc
+          #image: phyremaster/papermc@sha256:e2dc52d311b33a3a06a4ad8542d4bd3fa0e3462a412b9d3479b75b07d87d79ae
+          env:
+            - name: "MC_VERSION"
+              value: "1.17.1"
+            - name: "MC_RAM"
+              value: "4G"
+            - name: "JAVA_OPTS"
+              value: "-XX:+UseG1GC -Dsun.rmi.dgc.server.gcInterval=2147483646 -XX:+UnlockExperimentalVMOptions -XX:G1NewSizePercent=20 -XX:G1ReservePercent=20 -XX:MaxGCPauseMillis=50 -XX:G1HeapRegionSize=32M"
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 25565
+            - containerPort: 8123
+            - containerPort: 19132
+          volumeMounts:
+            - mountPath: "/papermc"
+              name: minecraft-data
+          resources:
+            requests:
+              memory: "4Gi"
+              cpu: 2 
+            limits:
+              memory: "5Gi"
+              cpu: 2
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft
+  namespace: games
+spec:
+  selector:
+    run: minecraft
+  ports:
+    - name: mc-port
+      protocol: TCP
+      port: 25565
+      targetPort: 25565
+      nodePort: 32556
+    - name: mc-geyser-port
+      protocol: UDP
+      port: 19132
+      targetPort: 19132 
+      nodePort: 31329 
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-ui
+  namespace: games
+spec:
+  selector:
+    run: minecraft
+  ports:
+    - name: ui-port
+      protocol: TCP
+      port: 8123
+      targetPort: 8123
+  type: ClusterIP
+---
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  name: minecraft-ui
+  namespace: games
+spec:
+  rules:
+    - host: minecraft.eniworks.net
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: minecraft-ui
+              servicePort: 8123

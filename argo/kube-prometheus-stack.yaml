@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kube-prometheus-stack
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: 'https://prometheus-community.github.io/helm-charts'
+    targetRevision: 24.0.1
+    chart: kube-prometheus-stack
+    helm:
+      parameters:
+        - name: prometheus.prometheusSpec.podMonitorSelectorNilUsesHelmValues
+          value: 'false'
+        - name: prometheus.prometheusSpec.serviceMonitorSelectorNilUsesHelmValues
+          value: 'false'
+        #- name: prometheus.prometheusSpec.resources.requests.memory
+        #  value: 'false'
+        - name: prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.storageClassName
+          value: 'nfs-client'
+        - name: prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.accessModes[0]
+          value: 'ReadWriteOnce'
+        - name: prometheus.prometheusSpec.storageSpec.volumeClaimTemplate.spec.resources.requests.storage
+          value: '10Gi'
+        - name: prometheus.ingress.enabled
+          value: 'true'
+        - name: prometheus.ingress.hosts[0]
+          value: 'prometheus.eniworks.net'
+        - name: prometheus.ingress.paths[0]
+          value: '/'
+        - name: grafana.ingress.enabled
+          value: 'true'
+        - name: grafana.ingress.hosts[0]
+          value: 'grafana.eniworks.net'

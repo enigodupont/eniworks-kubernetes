@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: elastic-logs
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/enigodupont/eniworks-kubernetes.git
+    targetRevision: HEAD
+    path: kubernetes/monitoring/elasticsearch

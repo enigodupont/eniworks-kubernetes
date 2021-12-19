@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: media
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: media
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/enigodupont/eniworks-kubernetes.git
+    targetRevision: HEAD
+    path: kubernetes/media
