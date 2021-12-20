@@ -4,3 +4,17 @@ kind: Kustomization
 resources:
   - crds.yaml
   - operator.yaml
+
+# It's not complaining about this so leaving it commented.
+#patches: 
+#  - target:
+#      kind: CustomResourceDefinition
+#      name: .*
+#    patch: |-
+#      - op: remove
+#        path: /metadata/labels
+#      - op: add
+#        path: /metadata/labels
+#        value:
+#          app.kubernetes.io/name: 'eck-operator-crds'
+#          app.kubernetes.io/version: '1.9.1'
