@@ -2,12 +2,13 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
-  - eniworks.yaml
-  - nfs-client-provisioner.yaml
-  - kube-prometheus-stack.yaml
-  - traefik.yaml
-  - elastic-operator.yaml
-  - elastic-logs.yaml
-  - media.yaml
-  - argo-addons.yaml
-  - games.yaml
+  - infra/eniworks.yaml
+  - infra/nfs-client-provisioner.yaml
+  - infra/kube-prometheus-stack.yaml
+  - infra/traefik.yaml
+  - infra/elastic-operator.yaml
+  - infra/elastic-logs.yaml
+  - infra/argo-addons.yaml
+  - apps/media.yaml
+  - apps/games.yaml
+  - apps/dndashboard.yaml
