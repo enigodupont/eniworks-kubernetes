@@ -32,3 +32,5 @@ spec:
           value: 'false'
         - name: additionalArguments[0]
           value: '--serversTransport.insecureSkipVerify=true'
+        - name: additionalArguments[1]
+          value: '--providers.kubernetesingress.ingressendpoint.hostname=eniworks.net'
