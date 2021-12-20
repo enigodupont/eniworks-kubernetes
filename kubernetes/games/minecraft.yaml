@@ -1,35 +1,23 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: minecraft
-  namespace: games
   labels:
-    run: minecraft
-    namespace: games
+    app: minecraft
 spec:
   replicas: 1
+  serviceName: "minecraft"
   selector:
     matchLabels:
-      run: minecraft
+      app: minecraft
   template:
     metadata:
       labels:
-        run: minecraft
-        namespace: games
+        app: minecraft
     spec:
-      volumes:
-        - name: minecraft-data
-          flexVolume:
-            driver: "microsoft.com/smb"
-            secretRef:
-              name: minecraft-creds
-            options:
-              source: "//towerofbabel/minecraft"
       containers:
         - name: minecraft
-          # It didn't like the sha, can fix later.
           image: phyremaster/papermc
-          #image: phyremaster/papermc@sha256:e2dc52d311b33a3a06a4ad8542d4bd3fa0e3462a412b9d3479b75b07d87d79ae
           env:
             - name: "MC_VERSION"
               value: "1.17.1"
@@ -52,15 +40,23 @@ spec:
             limits:
               memory: "5Gi"
               cpu: 2
+  volumeClaimTemplates:
+  - metadata:
+      name: minecraft-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: minecraft
-  namespace: games
 spec:
   selector:
-    run: minecraft
+    app: minecraft
   ports:
     - name: mc-port
       protocol: TCP
@@ -78,10 +74,9 @@ apiVersion: v1
 kind: Service
 metadata:
   name: minecraft-ui
-  namespace: games
 spec:
   selector:
-    run: minecraft
+    app: minecraft
   ports:
     - name: ui-port
       protocol: TCP
@@ -90,16 +85,18 @@ spec:
   type: ClusterIP
 ---
 kind: Ingress
-apiVersion: extensions/v1beta1
+apiVersion: networking.k8s.io/v1 
 metadata:
   name: minecraft-ui
-  namespace: games
 spec:
   rules:
     - host: minecraft.eniworks.net
       http:
         paths:
-          - path: /
-            backend:
-              serviceName: minecraft-ui
-              servicePort: 8123
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: minecraft-ui
+              port: 
+                number: 8123

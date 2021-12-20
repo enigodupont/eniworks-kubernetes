@@ -10,3 +10,4 @@ resources:
   - elastic-logs.yaml
   - media.yaml
   - argo-addons.yaml
+  - games.yaml
