@@ -16,6 +16,16 @@ spec:
       parameters:
         - name: deployment.replicas
           value: '2'
+        - name: podDisruptionBudget.enabled
+          value: 'true'
+        - name: podDisruptionBudget.maxUnavailable
+          value: '1'
+        #- name: logs.general.level
+        #  value: 'DEBUG'
+        - name: logs.access.enabled
+          value: 'false'
+        - name: logs.access.format
+          value: 'json'
         - name: service.type
           value: NodePort
         - name: ingressClass.enabled
@@ -34,3 +44,5 @@ spec:
           value: '--serversTransport.insecureSkipVerify=true'
         - name: additionalArguments[1]
           value: '--providers.kubernetesingress.ingressendpoint.hostname=eniworks.net'
+        - name: additionalArguments[2]
+          value: '--entryPoints.web.forwardedHeaders.insecure'

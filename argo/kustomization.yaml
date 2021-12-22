@@ -6,9 +6,11 @@ resources:
   - infra/nfs-client-provisioner.yaml
   - infra/kube-prometheus-stack.yaml
   - infra/traefik.yaml
+  - infra/traefik-monitoring.yaml
   - infra/elastic-operator.yaml
   - infra/elastic-logs.yaml
   - infra/argo-addons.yaml
+  - infra/docker-registry.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml
