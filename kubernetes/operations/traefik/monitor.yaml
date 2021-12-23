@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: traefik
+  labels:
+    app.kubernetes.io/instance: traefik
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: traefik
+  podMetricsEndpoints:
+  - port: metrics

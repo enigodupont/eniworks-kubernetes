@@ -1,0 +1,121 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: docker-registry
+  labels:
+    app: docker-registry
+spec:
+  replicas: 1
+  serviceName: "docker-registry"
+  selector:
+    matchLabels:
+      app: docker-registry
+  template:
+    metadata:
+      labels:
+        app: docker-registry
+    spec:
+      volumes:
+        - emptyDir: {}
+          name: certs
+      initContainers:
+        - name: gen-cert
+          image: frapsoft/openssl
+          args: ['req', '-x509', '-sha256', '-nodes', '-days', '365', '-newkey', 'rsa:4096', '-keyout', '/tmp/private.key', '-out', '/tmp/certificate.crt', '-subj', '/C=GB/ST=London/L=London/O=Global Security/OU=IT Department/CN=example.com']
+          volumeMounts:
+            - mountPath: "/tmp"
+              name: certs
+      containers:
+        - name: docker-registry
+          image: registry:2.7.1
+          env:
+            - name: REGISTRY_HTTP_ADDR
+              value: 0.0.0.0:443
+            - name: REGISTRY_HTTP_TLS_CERTIFICATE
+              value: /tmp/certificate.crt
+            - name: REGISTRY_HTTP_TLS_KEY
+              value: /tmp/private.key
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 443
+              name: registry
+          volumeMounts:
+            - mountPath: "/var/lib/registry"
+              name: docker-registry-data
+            - mountPath: "/tmp"
+              name: certs
+        - name: registry-ui
+          image: joxit/docker-registry-ui:latest
+          env:
+            - name: REGISTRY_TITLE
+              value: 'Eniworks Docker Registry'
+            - name: NGINX_PROXY_PASS_URL
+              value: "https://docker-registry"
+            - name: PULL_URL
+              value: "docker-registry-ui:80"
+            - name: SINGLE_REGISTRY
+              value: 'true'
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 80
+              name: ui
+
+  volumeClaimTemplates:
+    - metadata:
+        name: docker-registry-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "nfs-client"
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: docker-registry
+spec:
+  selector:
+    app: docker-registry
+  ports:
+    - name: registry
+      protocol: TCP
+      port: 443
+      targetPort: 443
+    - name: registry-ui
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: docker-registry-auth
+spec:
+  basicAuth:
+    secret: docker-registry-htpasswd
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: docker-registry
+
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`docker.eniworks.net`)
+    kind: Rule
+    services:
+    - name: docker-registry
+      port: 80
+      passHostHeader: true
+  - match: Host(`docker.eniworks.net`) && PathPrefix(`/v2`)
+    kind: Rule
+    services:
+    - name: docker-registry
+      port: 443
+      passHostHeader: true
+    middlewares:
+    - name: docker-registry-auth
