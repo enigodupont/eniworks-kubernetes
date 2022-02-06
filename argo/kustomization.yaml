@@ -11,6 +11,8 @@ resources:
   - infra/elastic-logs.yaml
   - infra/argo-addons.yaml
   - infra/docker-registry.yaml
+  - infra/matrix.yaml
+  - infra/matrix-addons.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml
