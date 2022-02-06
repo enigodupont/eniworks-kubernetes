@@ -1,0 +1,17 @@
+kind: Ingress
+apiVersion: networking.k8s.io/v1 
+metadata:
+  name: jenkins
+  namespace: operations
+spec:
+  rules:
+    - host: jenkins.eniworks.net
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: jenkins-operator-http-jenkins
+              port: 
+                number: 8080
