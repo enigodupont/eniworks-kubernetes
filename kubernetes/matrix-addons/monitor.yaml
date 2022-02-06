@@ -1,0 +1,11 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: matrix
+  namespace: operations
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: matrix
+  endpoints:
+  - port: metrics

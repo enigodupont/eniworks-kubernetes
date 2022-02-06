@@ -24,6 +24,8 @@ spec:
         - name: coturn.service.type
           value: ClusterIP
         - name: coturn.enabled
+          value: 'true'
+        - name: networkPolicies.enabled
           value: 'false'
         - name: ingress.hosts.federation
           value: matrix-fed.eniworks.net
@@ -32,18 +34,27 @@ spec:
         - name: ingress.hosts.synapse
           value: matrix.eniworks.net
         - name: mail.external.host
-          value: '10.1.1.1'
+          value: '10.64.0.6'
+        - name: mail.relay.image.tag
+          value: '4.95-r0-2'
         - name: mail.external.requireTransportSecurity
           value: 'false'
+        # Can't upgrade due to perm issues
+        #- name: synapse.image.tag
+        #  value: 'v1.51.0'
+        - name: coturn.image.tag
+          value: '4.5.2'
         - name: matrix.serverName
           value: eniworks.net
         - name: postgresql.enabled
           value: 'false'
         - name: postgresql.hostname
-          value: '10.1.1.1'
+          value: '10.64.0.6'
         - name: postgresql.username
           value: matrix
         - name: riot.enabled
+          value: 'false'
+        - name: ingress.enabled
           value: 'false'
         - name: matrix.registration.enabled
           value: 'false'
@@ -51,4 +62,4 @@ spec:
           value: 'false'
         - name: matrix.registration.sharedSecret
         - name: matrix.adminEmail
-          value: 'example@email.com'
+          value: 'juramir@protonmail.com'
