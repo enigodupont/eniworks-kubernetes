@@ -5,6 +5,7 @@ resources:
   - infra/eniworks.yaml
   - infra/nfs-client-provisioner.yaml
   - infra/kube-prometheus-stack.yaml
+  - infra/prometheus-adapter.yaml
   - infra/traefik.yaml
   - infra/traefik-monitoring.yaml
   - infra/elastic-operator.yaml
