@@ -21,3 +21,4 @@ resources:
   - apps/games.yaml
   - apps/dndashboard.yaml
   - apps/roadtripfinder.yaml
+  - apps/smt.yaml

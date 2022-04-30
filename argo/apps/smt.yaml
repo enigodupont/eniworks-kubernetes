@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: smt
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: apps
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/enigodupont/SMT-Card-Simulator.git
+    targetRevision: HEAD
+    path: argo/
