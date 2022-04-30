@@ -20,3 +20,4 @@ resources:
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml
+  - apps/roadtripfinder.yaml
