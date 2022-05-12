@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: umami
+  labels:
+    app: umami
+spec:
+  replicas: 1
+  serviceName: "umami"
+  selector:
+    matchLabels:
+      app: umami
+  template:
+    metadata:
+      labels:
+        app: umami
+    spec:
+      containers:
+        - name: umami
+          image: ghcr.io/mikecao/umami:postgresql-v1.31.0
+          env:
+            - name: DATABASE_TYPE
+              value: postgresql
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: umami-config
+                  key: DATABASE_URL
+            - name: HASH_SALT
+              valueFrom:
+                secretKeyRef:
+                  name: umami-config
+                  key: HASH_SALT
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 3000
+              name: ui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: umami
+spec:
+  selector:
+    app: umami
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: ClusterIP
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1 
+metadata:
+  name: umami
+spec:
+  rules:
+    - host: umami.eniworks.net
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: umami
+              port: 
+                number: 3000
