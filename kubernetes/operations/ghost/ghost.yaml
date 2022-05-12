@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ghost
+  labels:
+    app: ghost
+spec:
+  replicas: 1
+  serviceName: "ghost"
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: ghost
+          image: ghost:4.47.1-alpine
+          env:
+            - name: database__client
+              value: sqlite3
+            - name: database__connection__filename
+              value: content/data/ghost.db
+            - name: database__useNullAsDefault
+              value: 'true'
+            - name: database__debug
+              value: 'false'
+            - name: url
+              value: https://eniworks.net
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 2368
+              name: ui
+          volumeMounts:
+            - mountPath: /var/lib/ghost/content
+              name: ghost-data
+  volumeClaimTemplates:
+  - metadata:
+      name: ghost-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ghost
+spec:
+  selector:
+    app: ghost
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 2368
+      targetPort: 2368
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: ghost
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`eniworks.net`)
+    kind: Rule
+    services:
+    - name: ghost
+      port: 2368
+      passHostHeader: true
