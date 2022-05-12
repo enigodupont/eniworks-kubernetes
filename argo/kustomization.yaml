@@ -18,6 +18,7 @@ resources:
   # Holding on jenkins install as it currently needs 10+Gi Ram
   #- infra/jenkins.yaml
   - infra/umami.yaml
+  - infra/ghost.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml
