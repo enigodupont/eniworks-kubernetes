@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: logintracker
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: apps
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: https://github.com/enigodupont/loginTracker.git
+    targetRevision: HEAD
+    path: argo/
