@@ -15,8 +15,9 @@ resources:
   - infra/matrix.yaml
   - infra/matrix-addons.yaml
   - infra/jenkins-operator.yaml
-  # Holding on jenkins install as it currently needs 10+Gi Ram
+  # Holding on these installs as I need more ram
   #- infra/jenkins.yaml
+  #- infra/sonarqube.yaml
   - infra/umami.yaml
   - infra/ghost.yaml
   - apps/media.yaml

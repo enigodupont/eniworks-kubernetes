@@ -2,10 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: sonarqube
-  namespace: operations
   labels:
     run: sonarqube
-    namespace: operations
 spec:
   replicas: 1
   selector:
@@ -15,10 +13,10 @@ spec:
     metadata:
       labels:
         run: sonarqube
-        namespace: operations
     spec:
       containers:
       - name: sonarqube
+        # This is OLD and vulnerable to log4shell, I should update when I get more capacity.
         image: sonarqube:7.4-community
         imagePullPolicy: Always 
         ports:
@@ -34,7 +32,7 @@ spec:
               name: sonarqube
               key: password
         - name: SONARQUBE_JDBC_URL
-          value: jdbc:postgresql://toolbox/sonar
+          value: jdbc:postgresql://toolbox.eniworks.net/sonar
         resources:
           requests:
             memory: "1Gi"
@@ -47,7 +45,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sonarqube
-  namespace: operations
 spec:
   selector:
     run: sonarqube
@@ -73,7 +70,6 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sonarqube-ui
-  namespace: operations
 spec:
   selector:
     run: sonarqube
@@ -83,18 +79,18 @@ spec:
       port: 9000
       targetPort: 9000
   type: ClusterIP
----
-kind: Ingress
-apiVersion: extensions/v1beta1
-metadata:
-  name: sonarqube
-  namespace: operations
-spec:
-  rules:
-    - host: sonarqube.eniworks.net
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: sonarqube-ui
-              servicePort: 9000
+#---
+#apiVersion: traefik.containo.us/v1alpha1
+#kind: IngressRoute
+#metadata:
+#  name: sonarqube
+#spec:
+#  entryPoints:
+#    - web
+#  routes:
+#  - match: Host(`sonarqube.eniworks.net`)
+#    kind: Rule
+#    services:
+#    - name: sonarqube-ui
+#      port: 9000
+#      passHostHeader: true
