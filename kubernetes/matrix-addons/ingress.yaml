@@ -1,40 +1,27 @@
-kind: Ingress
-apiVersion: networking.k8s.io/v1 
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: matrix
-  namespace: operations
 spec:
-  rules:
-    # Main Synapse rule
-    - host: matrix.eniworks.net
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: matrix-synapse
-              port: 
-                number: 80
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`matrix.eniworks.net`)
+    kind: Rule
+    services:
+    - name: matrix-synapse
+      port: 80
+      passHostHeader: true
+  - match: Host(`matrix-fed.eniworks.net`)
+    kind: Rule
+    services:
+    - name: matrix-synapse-federation
+      port: 80
+      passHostHeader: true
     # Riot rule
-    #- host: element.eniworks.net
-    #  http:
-    #    paths:
-    #    - path: /
-    #      pathType: Prefix
-    #      backend:
-    #        service:
-    #          name: matrix-riot
-    #          port: 
-    #            number: 80
-    # Federation rule
-    - host: matrix-fed.eniworks.net
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: matrix-synapse-federation
-              port: 
-                number: 80
+    #- match: Host(`element.eniworks.net`)
+    #  kind: Rule
+    #  services:
+    #   - name: matrix-riot
+    #     port: 80
+    #     passHostHeader: true

@@ -1,16 +1,14 @@
-kind: Ingress
-apiVersion: networking.k8s.io/v1 
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: kibana
 spec:
-  rules:
-    - host: kibana.eniworks.net
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: logs-kb-http
-              port: 
-                number: 5601
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`kibana.eniworks.net`)
+    kind: Rule
+    services:
+    - name: logs-kb-http
+      port: 5601
+      passHostHeader: true
