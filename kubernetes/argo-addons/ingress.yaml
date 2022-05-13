@@ -1,17 +1,15 @@
-kind: Ingress
-apiVersion: networking.k8s.io/v1 
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: argo
   namespace: argocd
 spec:
-  rules:
-    - host: argo.eniworks.net
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: argocd-server
-              port: 
-                number: 443
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`argo.eniworks.net`)
+    kind: Rule
+    services:
+    - name: argocd-server
+      port: 443
+      passHostHeader: true

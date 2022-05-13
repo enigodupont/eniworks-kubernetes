@@ -1,17 +1,14 @@
-kind: Ingress
-apiVersion: networking.k8s.io/v1 
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
 metadata:
   name: jenkins
-  namespace: operations
 spec:
-  rules:
-    - host: jenkins.eniworks.net
-      http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-            service:
-              name: jenkins-operator-http-jenkins
-              port: 
-                number: 8080
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`jenkins.eniworks.net`)
+    kind: Rule
+    services:
+    - name: jenkins-operator-http-jenkins
+      port: 8080
+      passHostHeader: true

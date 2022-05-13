@@ -23,7 +23,7 @@ spec:
         #- name: logs.general.level
         #  value: 'DEBUG'
         - name: logs.access.enabled
-          value: 'false'
+          value: 'true'
         - name: logs.access.format
           value: 'json'
         - name: service.type
