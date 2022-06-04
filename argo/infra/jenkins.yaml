@@ -9,6 +9,19 @@ spec:
     namespace: operations
     server: https://kubernetes.default.svc
   source:
-    repoURL: https://github.com/enigodupont/eniworks-kubernetes.git
-    targetRevision: HEAD
-    path: kubernetes/operations/jenkins
+    repoURL: "https://charts.jenkins.io"
+    targetRevision: "4.1.4"
+    chart: jenkins
+    helm:
+      values: |
+        controller:
+          ingress:
+            enabled: true
+            apiVersion: networking.k8s.io/v1
+            hostName: jenkins.eniworks.net
+            annotations:
+              traefik.ingress.kubernetes.io/preserve-host: 'true'
+          prometheus:
+            enabled: true
+          admin:
+            existingSecret: jenkins
