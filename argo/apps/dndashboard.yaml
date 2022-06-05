@@ -10,5 +10,5 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/enigodupont/D-Dashboard.git
-    targetRevision: HEAD
+    targetRevision: argo_cd
     path: argo/

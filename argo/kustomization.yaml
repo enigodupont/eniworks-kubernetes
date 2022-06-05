@@ -11,7 +11,8 @@ resources:
   - infra/elastic-operator.yaml
   - infra/elastic-logs.yaml
   - infra/argo-addons.yaml
-  - infra/docker-registry.yaml
+  # This registry didn't fit my needs, not deploying for now.
+  #- infra/docker-registry.yaml
   - infra/matrix.yaml
   - infra/matrix-addons.yaml
   - infra/jenkins.yaml
