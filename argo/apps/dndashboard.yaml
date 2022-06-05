@@ -12,3 +12,5 @@ spec:
     repoURL: https://github.com/enigodupont/D-Dashboard.git
     targetRevision: argo_cd
     path: argo/
+  syncPolicy:
+    automated: {}
