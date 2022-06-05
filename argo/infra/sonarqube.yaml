@@ -10,5 +10,5 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/enigodupont/eniworks-kubernetes.git
-    targetRevision: HEAD
+    targetRevision: sonar-upgrade
     path: kubernetes/operations/sonarqube
