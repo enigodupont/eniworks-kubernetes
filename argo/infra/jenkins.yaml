@@ -31,4 +31,11 @@ spec:
             - git:4.11.3
             - configuration-as-code:1429.v09b_044a_c93de
             - sonar:2.14
+          resources:
+            requests:
+              cpu: "2"
+              memory: "7Gi"
+            limits:
+              cpu: "2"
+              memory: "7Gi"
             
