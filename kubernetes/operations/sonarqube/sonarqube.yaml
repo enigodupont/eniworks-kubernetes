@@ -14,10 +14,16 @@ spec:
       labels:
         run: sonarqube
     spec:
+      initContainers:
+        - name: set-sysctl
+          image: busybox
+          command: ["sysctl", "-w", "vm.max_map_count=262144"]
+          securityContext:
+            privileged: true
       containers:
       - name: sonarqube
         # This is OLD and vulnerable to log4shell, I should update when I get more capacity.
-        image: sonarqube:7.4-community
+        image: sonarqube:9.4.0-community
         imagePullPolicy: Always 
         ports:
         - containerPort: 9000
@@ -35,41 +41,16 @@ spec:
           value: jdbc:postgresql://toolbox.eniworks.net/sonar
         resources:
           requests:
-            memory: "4Gi"
-            cpu: 1
+            memory: '4Gi'
+            cpu: '1'
           limits:
-            memory: "4Gi"
-            cpu: 1
+            memory: '4Gi'
+            cpu: '1'
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: sonarqube
-spec:
-  selector:
-    run: sonarqube
-  ports:
-    - name: ui-port
-      protocol: TCP
-      port: 9000
-      targetPort: 9000
-      nodePort: 30900
-    - name: ssl-ui-port
-      protocol: TCP
-      port: 9001
-      targetPort: 9001
-      nodePort: 30901
-    - name: extra-port
-      protocol: TCP
-      port: 9092
-      targetPort: 9092
-      nodePort: 30992
-  type: NodePort
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: sonarqube-ui
 spec:
   selector:
     run: sonarqube
@@ -91,6 +72,6 @@ spec:
   - match: Host(`sonarqube.eniworks.net`)
     kind: Rule
     services:
-    - name: sonarqube-ui
+    - name: sonarqube
       port: 9000
       passHostHeader: true
