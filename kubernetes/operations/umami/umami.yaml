@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: umami
-          image: ghcr.io/mikecao/umami:postgresql-v1.31.0
+          image: ghcr.io/mikecao/umami:postgresql-v1.33.2
           env:
             - name: DATABASE_TYPE
               value: postgresql
