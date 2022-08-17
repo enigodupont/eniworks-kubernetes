@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: "https://charts.jenkins.io"
-    targetRevision: "4.1.4"
+    targetRevision: "4.1.17"
     chart: jenkins
     helm:
       values: |
@@ -26,12 +26,12 @@ spec:
           admin:
             existingSecret: jenkins
           installPlugins:
-            - kubernetes:3600.v144b_cd192ca_a_
+            - kubernetes:3697.v771155683e38
             - workflow-aggregator:581.v0c46fa_697ffd
-            - git:4.11.3
-            - configuration-as-code:1429.v09b_044a_c93de
+            - git:4.11.4
+            - configuration-as-code:1512.vb_79d418d5fc8
             - sonar:2.14
-            - github:1.34.3
+            - github:1.34.5
           resources:
             requests:
               cpu: "2"
