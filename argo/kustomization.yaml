@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 resources:
+  - infra/argo.yaml
   - infra/eniworks.yaml
   - infra/nfs-client-provisioner.yaml
   - infra/kube-prometheus-stack.yaml
