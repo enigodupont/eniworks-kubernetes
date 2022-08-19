@@ -21,7 +21,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: ghost
-          image: ghost:4.47.1-alpine
+          image: ghost:4.48.2-alpine
           env:
             - name: database__client
               value: sqlite3
