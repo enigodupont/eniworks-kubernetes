@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wiki-mirror
+  labels:
+    app: wiki-mirror
+spec:
+  replicas: 1
+  serviceName: "wiki-mirror"
+  selector:
+    matchLabels:
+      app: wiki-mirror
+  template:
+    metadata:
+      labels:
+        app: wiki-mirror
+    spec:
+      containers:
+        - name: wiki-mirror
+          image: kiwix/kiwix-serve:3.3.0-1
+          args:
+            - /data/wikipedia_en_all_maxi.zim
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 80
+              name: ui
+          volumeMounts:
+            - mountPath: /data
+              name: wiki-mirror-data
+  volumeClaimTemplates:
+  - metadata:
+      name: wiki-mirror-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 100Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wiki-mirror
+spec:
+  selector:
+    app: wiki-mirror
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: wiki-mirror
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`wikipedia.eniworks.net`)
+    kind: Rule
+    services:
+    - name: wiki-mirror
+      port: 80
+      passHostHeader: true
