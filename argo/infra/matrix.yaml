@@ -24,7 +24,7 @@ spec:
         - name: coturn.service.type
           value: ClusterIP
         - name: coturn.enabled
-          value: 'true'
+          value: 'false'
         - name: networkPolicies.enabled
           value: 'false'
         - name: ingress.hosts.federation
@@ -40,8 +40,8 @@ spec:
         - name: mail.external.requireTransportSecurity
           value: 'false'
         # Can't upgrade due to perm issues
-        #- name: synapse.image.tag
-        #  value: 'v1.51.0'
+        - name: synapse.image.tag
+          value: 'v1.39.0'
         - name: coturn.image.tag
           value: '4.5.2'
         - name: matrix.serverName
