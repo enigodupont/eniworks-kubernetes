@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: filestash
+  labels:
+    app: filestash
+spec:
+  replicas: 1
+  serviceName: "filestash"
+  selector:
+    matchLabels:
+      app: filestash
+  template:
+    metadata:
+      labels:
+        app: filestash
+    spec:
+      containers:
+        - name: filestash
+          image: machines/filestash:f88a026
+          env:
+            - name: DEBUG
+              value: "false"
+            - name: APPLICATION_URL
+              value: files.eniworks.net
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 8334
+              name: ui
+          volumeMounts:
+            - mountPath: /app/data/state
+              name: filestash-data
+  volumeClaimTemplates:
+  - metadata:
+      name: filestash-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: filestash
+spec:
+  selector:
+    app: filestash
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 8334
+      targetPort: 8334
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: filestash
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`files.eniworks.net`)
+    kind: Rule
+    services:
+    - name: filestash
+      port: 8334
+      passHostHeader: true
