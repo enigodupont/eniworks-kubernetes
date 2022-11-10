@@ -20,6 +20,7 @@ resources:
   - infra/sonarqube.yaml
   - infra/umami.yaml
   - infra/ghost.yaml
+  - infra/filestash.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml
