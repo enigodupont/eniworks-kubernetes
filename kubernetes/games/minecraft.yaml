@@ -17,10 +17,10 @@ spec:
     spec:
       containers:
         - name: minecraft
-          image: hchasens/papermc@sha256:ec0518710efe27fb8cde3149e31cb2d1a334f628b335797896e2978b7ab34ca6
+          image: enigodupont/papermc:latest
           env:
             - name: "MC_VERSION"
-              value: "1.18.2"
+              value: "1.19.2"
             - name: "MC_RAM"
               value: "4G"
             - name: "JAVA_OPTS"
