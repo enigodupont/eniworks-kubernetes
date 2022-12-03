@@ -14,12 +14,12 @@ spec:
       jsonPointers:
         - /spec/template/spec/containers/0/startupProbe
   source:
-    repoURL: "https://typokign.github.io/helm-charts"
-    targetRevision: "2.7.0"
-    chart: matrix
+    repoURL: "registry-1.docker.io"
+    targetRevision: "2.8.0"
+    chart: enigodupont/matrix
     helm:
       parameters:
-        - name: postgresql.password
+        - name: postgresql.auth.password
           value: not_real_value_wont_work_override
         - name: coturn.service.type
           value: ClusterIP
@@ -35,22 +35,15 @@ spec:
           value: matrix.eniworks.net
         - name: mail.external.host
           value: '10.64.0.6'
-        - name: mail.relay.image.tag
-          value: '4.95-r0-2'
         - name: mail.external.requireTransportSecurity
           value: 'false'
-        # Can't upgrade due to perm issues
-        - name: synapse.image.tag
-          value: 'v1.39.0'
-        - name: coturn.image.tag
-          value: '4.5.2'
         - name: matrix.serverName
           value: eniworks.net
         - name: postgresql.enabled
           value: 'false'
         - name: postgresql.hostname
           value: '10.64.0.6'
-        - name: postgresql.username
+        - name: postgresql.auth.username
           value: matrix
         - name: riot.enabled
           value: 'false'
