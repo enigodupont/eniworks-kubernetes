@@ -6,7 +6,7 @@ spec:
   version: 7.16.2
   nodeSets:
   - name: default
-    count: 3
+    count: 1
     podTemplate:
       spec:
         securityContext:
@@ -27,3 +27,4 @@ spec:
       node.roles: ["master", "data", "ingest", "ml"]
       # this allows ES to run on nodes even if their vm.max_map_count has not been increased, at a performance cost
       node.store.allow_mmap: false
+      xpack.ml.enabled: false
