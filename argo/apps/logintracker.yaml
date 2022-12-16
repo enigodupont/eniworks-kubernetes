@@ -10,5 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: https://github.com/enigodupont/loginTracker.git
-    targetRevision: HEAD
+    targetRevision: argo_cd
     path: argo/
+  syncPolicy:
+    automated: {}
