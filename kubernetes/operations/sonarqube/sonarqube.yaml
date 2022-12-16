@@ -23,7 +23,7 @@ spec:
       containers:
       - name: sonarqube
         # This is OLD and vulnerable to log4shell, I should update when I get more capacity.
-        image: sonarqube:9.4.0-community
+        image: sonarqube:9.7.1-community
         imagePullPolicy: Always 
         ports:
         - containerPort: 9000
