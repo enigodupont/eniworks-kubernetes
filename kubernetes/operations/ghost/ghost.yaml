@@ -78,3 +78,9 @@ spec:
     - name: ghost
       port: 2368
       passHostHeader: true
+  - match: Host(`www.eniworks.net`)
+    kind: Rule
+    services:
+    - name: ghost
+      port: 2368
+      passHostHeader: true
