@@ -10,13 +10,14 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: 'https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner'
-    targetRevision: 4.0.16
+    targetRevision: 4.0.17
     chart: nfs-subdir-external-provisioner
     helm:
-      parameters:
-        - name: nfs.path
-          value: /mnt/babel/Kubernetes/nfs-client-provisioner
-        - name: nfs.server
-          value: towerofbabel
-        - name: storageClass.defaultClass
-          value: "true"
+      values: |
+        nfs:
+          path: /mnt/babel/Kubernetes/nfs-client-provisioner
+          server: towerofbabel
+          mountOptions:
+            - nfsvers=3
+        storageClass:
+          defaultClass: true
