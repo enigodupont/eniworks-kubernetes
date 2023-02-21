@@ -45,6 +45,13 @@ spec:
             mountPath: /var/log/pods
           - name: varlibdockercontainers
             mountPath: /var/lib/docker/containers
+          resources:
+            limits:
+              cpu: 200m
+              memory: 300Mi
+            requests:
+              cpu: 200m
+              memory: 300Mi
           env:
             - name: NODE_NAME
               valueFrom:

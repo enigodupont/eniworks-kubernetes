@@ -21,7 +21,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: ghost
-          image: ghost:4.48.2-alpine
+          image: ghost:5.35.0-alpine
           env:
             - name: database__client
               value: sqlite3
@@ -33,6 +33,14 @@ spec:
               value: 'false'
             - name: url
               value: https://eniworks.net
+            - name: mail__transport
+              value: SMTP
+            - name: mail__options__host
+              value: toolbox.eniworks.net
+            - name: mail__options__port
+              value: '25'
+            - name: mail__options__secure
+              value: 'false'
           imagePullPolicy: Always 
           ports:
             - containerPort: 2368
