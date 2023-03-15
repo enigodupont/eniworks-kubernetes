@@ -22,30 +22,29 @@ spec:
             privileged: true
       containers:
       - name: sonarqube
-        # This is OLD and vulnerable to log4shell, I should update when I get more capacity.
-        image: sonarqube:9.7.1-community
+        image: sonarqube:9.9.0-community
         imagePullPolicy: Always 
         ports:
         - containerPort: 9000
         - containerPort: 9001
         - containerPort: 9092
         env:
-        - name: SONARQUBE_JDBC_USERNAME
+        - name: SONAR_JDBC_USERNAME
           value: sonar
-        - name: SONARQUBE_JDBC_PASSWORD
+        - name: SONAR_JDBC_PASSWORD
           valueFrom:
             secretKeyRef:
               name: sonarqube
               key: password
-        - name: SONARQUBE_JDBC_URL
+        - name: SONAR_JDBC_URL
           value: jdbc:postgresql://toolbox.eniworks.net/sonar
         resources:
           requests:
-            memory: '4Gi'
-            cpu: '1'
+            memory: '3Gi'
+            cpu: 300m
           limits:
-            memory: '4Gi'
-            cpu: '1'
+            memory: '3Gi'
+            cpu: 300m
 ---
 apiVersion: v1
 kind: Service
