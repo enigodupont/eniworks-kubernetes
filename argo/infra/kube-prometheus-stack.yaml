@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: 'https://prometheus-community.github.io/helm-charts'
-    targetRevision: 35.2.0
+    targetRevision: 45.23.0
     chart: kube-prometheus-stack
     helm:
       parameters:

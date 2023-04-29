@@ -10,20 +10,11 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: "https://charts.jenkins.io"
-    targetRevision: "4.3.2"
+    targetRevision: "4.3.22"
     chart: jenkins
     helm:
       values: |
         controller:
-          podSecurityContextOverride:
-            runAsUser: 1000
-            runAsNonRoot: true
-            supplementalGroups: [1000,1005]
-          containerSecurityContext:
-            runAsUser: 1000
-            runAsGroup: 1005
-            readOnlyRootFilesystem: true
-            allowPrivilegeEscalation: false
           ingress:
             enabled: true
             apiVersion: networking.k8s.io/v1

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: wiki-mirror
-          image: kiwix/kiwix-serve:3.4.0
+          image: ghcr.io/kiwix/kiwix-serve:3.4.0
           args:
             - allthetropes_en_all_maxi_2020-11.zim
             - westeros_en_all_2018-10.zim

@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: synclounge
-        image: synclounge/synclounge:5.1.112
+        image: synclounge/synclounge:5.2.5
         imagePullPolicy: Always
         env:
         ports:

@@ -21,7 +21,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: ghost
-          image: ghost:5.35.0-alpine
+          image: ghost:5.45.1-alpine
           env:
             - name: database__client
               value: sqlite3
@@ -42,6 +42,13 @@ spec:
             - name: mail__options__secure
               value: 'false'
           imagePullPolicy: Always 
+          resources:
+            requests:
+              memory: '1Gi'
+              cpu: 300m
+            limits:
+              memory: '1Gi'
+              cpu: 300m
           ports:
             - containerPort: 2368
               name: ui
