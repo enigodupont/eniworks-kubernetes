@@ -18,41 +18,56 @@ spec:
     targetRevision: "2.8.0"
     chart: enigodupont/matrix
     helm:
-      parameters:
-        - name: postgresql.auth.password
-          value: not_real_value_wont_work_override
-        - name: coturn.service.type
-          value: ClusterIP
-        - name: coturn.enabled
-          value: 'false'
-        - name: networkPolicies.enabled
-          value: 'false'
-        - name: ingress.hosts.federation
-          value: matrix-fed.eniworks.net
-        - name: ingress.hosts.riot
-          value: element.eniworks.net
-        - name: ingress.hosts.synapse
-          value: matrix.eniworks.net
-        - name: mail.external.host
-          value: '10.64.0.6'
-        - name: mail.external.requireTransportSecurity
-          value: 'false'
-        - name: matrix.serverName
-          value: eniworks.net
-        - name: postgresql.enabled
-          value: 'false'
-        - name: postgresql.hostname
-          value: '10.64.0.6'
-        - name: postgresql.auth.username
-          value: matrix
-        - name: riot.enabled
-          value: 'false'
-        - name: ingress.enabled
-          value: 'false'
-        - name: matrix.registration.enabled
-          value: 'false'
-        - name: matrix.registration.allowGuests
-          value: 'false'
-        - name: matrix.registration.sharedSecret
-        - name: matrix.adminEmail
-          value: 'juramir@protonmail.com'
+      values: |
+        postgresql:
+          enabled: false
+          hostname: 10.64.0.6
+          auth:
+            username: matrix
+            password: not_real_value_wont_work_override
+        coturn:
+          enabled: false
+          service:
+            type: ClusterIP
+        networkPolicies:
+          enabled: false
+        ingress:
+          enabled: false
+          hosts:
+            federation: matrix-fed.eniworks.net
+            riot: element.eniworks.net
+            synapse: matrix.eniworks.net
+        mail:
+          external:
+            host: '10.64.0.6'
+            requireTransportSecurity: false
+        matrix:
+          serverName: eniworks.net
+          registration:
+            enabled: false
+            allowGuests: false
+            sharedSecret: ''
+          adminEmail: juramir@protonmail.com
+        riot:
+          enabled: false
+        synapse:
+          image:
+            tag: v1.82.0
+          resources:
+            requests:
+              cpu: 100m
+              memory: 2Gi
+            limits: 
+              cpu: 100m
+              memory: 2Gi   
+          probes:
+            readiness:
+              timeoutSeconds: 30
+              periodSeconds: 30
+            startup:
+              timeoutSeconds: 30
+              periodSeconds: 30
+              failureThreshold: 6
+            liveness:
+              timeoutSeconds: 30
+              periodSeconds: 30

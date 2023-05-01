@@ -23,6 +23,8 @@ spec:
         - name: ghost
           image: ghost:5.45.1-alpine
           env:
+            - name: NODE_ENV
+              value: production
             - name: database__client
               value: sqlite3
             - name: database__connection__filename
@@ -45,10 +47,10 @@ spec:
           resources:
             requests:
               memory: '1Gi'
-              cpu: 300m
+              cpu: 400m
             limits:
               memory: '1Gi'
-              cpu: 300m
+              cpu: 400m
           ports:
             - containerPort: 2368
               name: ui
