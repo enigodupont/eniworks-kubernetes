@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: "https://charts.jenkins.io"
-    targetRevision: "4.3.22"
+    targetRevision: "4.3.29"
     chart: jenkins
     helm:
       values: |
@@ -29,7 +29,7 @@ spec:
             - kubernetes:3923.v294a_d4250b_91
             - workflow-aggregator:581.v0c46fa_697ffd
             - git:5.0.1
-            - configuration-as-code:1625.v27444588cc3d
+            - configuration-as-code:1647.ve39ca_b_829b_42
             - sonar:2.15
             - github:1.37.0
             - simple-theme-plugin:146.v0e67db_a_9052e

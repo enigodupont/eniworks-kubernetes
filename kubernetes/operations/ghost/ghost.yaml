@@ -21,7 +21,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: ghost
-          image: ghost:5.45.1-alpine
+          image: ghost:5.53.1-alpine
           env:
             - name: NODE_ENV
               value: production
