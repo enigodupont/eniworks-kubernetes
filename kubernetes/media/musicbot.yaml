@@ -1,0 +1,37 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: musicbot
+  labels:
+    run: musicbot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: musicbot
+  template:
+    metadata:
+      labels:
+        run: musicbot
+    spec:
+      containers:
+      - name: musicbot
+        image: enigodupont/musicbot:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: 128m
+          limits:
+            memory: "256Mi"
+            cpu: 128m
+        volumeMounts:
+        - mountPath: "/app/config.txt"
+          subPath: "config.txt"
+          readOnly: true
+          name: musicbot-config
+      volumes:
+      - name: musicbot-config
+        secret:
+          secretName: musicbot-config

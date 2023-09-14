@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - synclounge.yaml
   - wiki-mirror.yaml
+  - musicbot.yaml
