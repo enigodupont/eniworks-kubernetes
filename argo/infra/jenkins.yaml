@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: "https://charts.jenkins.io"
-    targetRevision: "4.6.4"
+    targetRevision: "4.11.1"
     chart: jenkins
     helm:
       values: |
@@ -33,6 +33,7 @@ spec:
             - sonar:2.15
             - github:1.37.0
             - simple-theme-plugin:146.v0e67db_a_9052e
+            - cloudbees-disk-usage-simple:203.v3f46a_7462b_1a_
           resources:
             requests:
               cpu: "2"
