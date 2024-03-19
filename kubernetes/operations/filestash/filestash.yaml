@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: filestash
-          image: machines/filestash:6b271d3
+          image: machines/filestash:latest
           env:
             - name: DEBUG
               value: "false"
