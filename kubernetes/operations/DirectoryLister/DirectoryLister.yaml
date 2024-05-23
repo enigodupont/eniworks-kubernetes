@@ -1,36 +1,36 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: tilefilemanager
+  name: directorylister
   labels:
-    app: tilefilemanager
+    app: directorylister
 spec:
   replicas: 1
-  serviceName: "tilefilemanager"
+  serviceName: "directorylister"
   selector:
     matchLabels:
-      app: tilefilemanager
+      app: directorylister
   template:
     metadata:
       labels:
-        app: tilefilemanager
+        app: directorylister
     spec:
       containers:
-        - name: tilefilemanager
-          image: tinyfilemanager/tinyfilemanager:latest
-          env:
-            - name: DEBUG
-              value: "false"
+        - name: directorylister
+          image: enigodupont/directorylister:latest
+          #env:
+          #  - name: DEBUG
+          #    value: "false"
           imagePullPolicy: Always 
           ports:
             - containerPort: 80
               name: ui
           volumeMounts:
-            - mountPath: /var/www/html/data
-              name: tilefilemanager-data
+            - mountPath: /var/www/html
+              name: directorylister-data
   volumeClaimTemplates:
   - metadata:
-      name: tilefilemanager-data
+      name: directorylister-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: "nfs-client"
@@ -41,10 +41,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: tilefilemanager
+  name: directorylister
 spec:
   selector:
-    app: tilefilemanager
+    app: directorylister
   ports:
     - name: ui
       protocol: TCP
@@ -55,7 +55,7 @@ spec:
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: tilefilemanager
+  name: directorylister
 spec:
   entryPoints:
     - web
@@ -63,6 +63,6 @@ spec:
   - match: Host(`cdn.eniworks.net`)
     kind: Rule
     services:
-    - name: tilefilemanager
+    - name: directorylister
       port: 80
       passHostHeader: true
