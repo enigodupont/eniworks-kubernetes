@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tilefilemanager
+  labels:
+    app: tilefilemanager
+spec:
+  replicas: 1
+  serviceName: "tilefilemanager"
+  selector:
+    matchLabels:
+      app: tilefilemanager
+  template:
+    metadata:
+      labels:
+        app: tilefilemanager
+    spec:
+      containers:
+        - name: tilefilemanager
+          image: tinyfilemanager/tinyfilemanager:latest
+          env:
+            - name: DEBUG
+              value: "false"
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 80
+              name: ui
+          volumeMounts:
+            - mountPath: /var/www/html/data
+              name: tilefilemanager-data
+  volumeClaimTemplates:
+  - metadata:
+      name: tilefilemanager-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: "nfs-client"
+      resources:
+        requests:
+          storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tilefilemanager
+spec:
+  selector:
+    app: tilefilemanager
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: tilefilemanager
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`cdn.eniworks.net`)
+    kind: Rule
+    services:
+    - name: tilefilemanager
+      port: 80
+      passHostHeader: true
