@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: umami
-          image: ghcr.io/umami-software/umami:postgresql-v2.10.2 
+          image: ghcr.io/umami-software/umami:postgresql-v2.14.0
           env:
             - name: DATABASE_TYPE
               value: postgresql
@@ -50,7 +50,7 @@ spec:
       targetPort: 3000
   type: ClusterIP
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: umami

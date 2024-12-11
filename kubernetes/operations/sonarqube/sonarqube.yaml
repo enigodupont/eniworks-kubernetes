@@ -22,7 +22,7 @@ spec:
             privileged: true
       containers:
       - name: sonarqube
-        image: sonarqube:10.1.0-community
+        image: sonarqube:10.7.0-community
         imagePullPolicy: Always 
         ports:
         - containerPort: 9000
@@ -60,7 +60,7 @@ spec:
       targetPort: 9000
   type: ClusterIP
 ---
-apiVersion: traefik.containo.us/v1alpha1
+apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: sonarqube
