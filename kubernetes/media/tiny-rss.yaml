@@ -1,0 +1,88 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tiny-rss
+  labels:
+    run: tiny-rss
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: tiny-rss
+  template:
+    metadata:
+      labels:
+        run: tiny-rss
+    spec:
+      containers:
+      - name: tiny-rss
+        image: wangqiru/ttrss:latest
+        imagePullPolicy: Always
+        env:
+          - name: SELF_URL_PATH
+            value: https://rss.eniworks.net
+          - name: DB_HOST
+            valueFrom:
+              secretKeyRef:
+                name: tiny-rss-config
+                key: DB_HOST
+          - name: DB_PORT
+            valueFrom:
+              secretKeyRef:
+                name: tiny-rss-config
+                key: DB_PORT
+          - name: DB_NAME
+            valueFrom:
+              secretKeyRef:
+                name: tiny-rss-config
+                key: DB_NAME
+          - name: DB_USER
+            valueFrom:
+              secretKeyRef:
+                name: tiny-rss-config
+                key: DB_USER
+          - name: DB_PASS
+            valueFrom:
+              secretKeyRef:
+                name: tiny-rss-config
+                key: DB_PASS
+        ports:
+          - name: ui
+            containerPort: 80
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: 128m
+          limits:
+            memory: "256Mi"
+            cpu: 128m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tiny-rss
+spec:
+  selector:
+    run: tiny-rss
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: tiny-rss
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`rss.eniworks.net`)
+    kind: Rule
+    services:
+    - name: tiny-rss
+      port: 80
+      passHostHeader: true

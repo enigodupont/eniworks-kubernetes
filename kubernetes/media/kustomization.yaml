@@ -5,3 +5,4 @@ resources:
   - synclounge.yaml
   - wiki-mirror.yaml
   - musicbot.yaml
+  - tiny-rss.yaml
