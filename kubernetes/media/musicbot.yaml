@@ -17,21 +17,33 @@ spec:
     spec:
       containers:
       - name: musicbot
-        image: enigodupont/musicbot:latest
+        #image: enigodupont/musicbot:latest
+        image: ghcr.io/museofficial/muse:pr-1197
         imagePullPolicy: Always
+        env:
+          - name: DISCORD_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: muse-config
+                key: DISCORD_TOKEN
+          - name: YOUTUBE_API_KEY
+            valueFrom:
+              secretKeyRef:
+                name: muse-config
+                key: YOUTUBE_API_KEY
         resources:
           requests:
-            memory: "256Mi"
-            cpu: 128m
+            memory: "400Mi"
+            cpu: 500m
           limits:
-            memory: "256Mi"
-            cpu: 128m
-        volumeMounts:
-        - mountPath: "/app/config.txt"
-          subPath: "config.txt"
-          readOnly: true
-          name: musicbot-config
-      volumes:
-      - name: musicbot-config
-        secret:
-          secretName: musicbot-config
+            memory: "400Mi"
+            cpu: 500m
+        #volumeMounts:
+        #- mountPath: "/app/config.txt"
+        #  subPath: "config.txt"
+        #  readOnly: true
+        #  name: musicbot-config
+      #volumes:
+      #- name: musicbot-config
+      #  secret:
+      #    secretName: musicbot-config
