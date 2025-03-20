@@ -58,14 +58,14 @@ spec:
             - mountPath: /var/lib/ghost/content
               name: ghost-data
   volumeClaimTemplates:
-  - metadata:
-      name: ghost-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: "nfs-client"
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: ghost-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "nfs-client"
+        resources:
+          requests:
+            storage: 10Gi
 ---
 apiVersion: v1
 kind: Service

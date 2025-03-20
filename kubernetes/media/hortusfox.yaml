@@ -1,0 +1,157 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hortusfox
+  labels:
+    app: hortusfox
+spec:
+  replicas: 1
+  serviceName: "hortusfox"
+  selector:
+    matchLabels:
+      app: hortusfox
+  template:
+    metadata:
+      labels:
+        app: hortusfox
+    spec:
+      containers:
+        - name: hortusfox
+          image: ghcr.io/danielbrendel/hortusfox-web:v4.4
+          imagePullPolicy: Always
+          env: 
+            - name: APP_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: hortusfox
+                  key: hortusfox-admin-email
+            - name: APP_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hortusfox
+                  key: hortusfox-admin-password
+            - name: APP_TIMEZONE
+              value: UTC
+            - name: DB_HOST
+              value: 127.0.0.1
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_DATABASE
+              value: hortusfox
+            - name: DB_USERNAME
+              value: hortusfox
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hortusfox
+                  key: hortusfox-db-password
+            - name: DB_CHARSET
+              value: utf8mb4
+          resources:
+            requests:
+              memory: "400Mi"
+              cpu: 500m
+            limits:
+              memory: "400Mi"
+              cpu: 500m
+          ports:
+            - containerPort: 80
+              name: ui
+          volumeMounts:
+            - mountPath: /var/www/html/public/img
+              name: hortusfox-www-data
+              subPath: img
+            - mountPath: /var/www/html/app/logs
+              name: hortusfox-www-data
+              subPath: logs
+            - mountPath: /var/www/html/public/backup
+              name: hortusfox-www-data
+              subPath: backup
+            - mountPath: /var/www/html/public/themes
+              name: hortusfox-www-data
+              subPath: themes
+            - mountPath: /var/www/html/app/migrations
+              name: hortusfox-www-data
+              subPath: migrations
+        - name: hortusfox-mariadb
+          image: mariadb:lts
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            #fsGroup: 1000
+          env: 
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hortusfox
+                  key: hortusfox-root-db-password
+            - name: MYSQL_DATABASE
+              value: hortusfox
+            - name: MYSQL_USER
+              value: hortusfox
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: hortusfox
+                  key: hortusfox-db-password
+          resources:
+            requests:
+              memory: "400Mi"
+              cpu: 500m
+            limits:
+              memory: "400Mi"
+              cpu: 500m
+          ports:
+            - containerPort: 3306
+              name: db
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: hortusfox-db-data
+  volumeClaimTemplates:
+    - metadata:
+        name: hortusfox-www-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "nfs-client"
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: hortusfox-db-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "nfs-client"
+        resources:
+          requests:
+            storage: 10Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hortusfox
+spec:
+  selector:
+    app: hortusfox
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: hortusfox
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`hortusfox.eniworks.net`)
+    kind: Rule
+    services:
+    - name: hortusfox
+      port: 80
+      passHostHeader: true

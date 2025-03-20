@@ -6,3 +6,4 @@ resources:
   - wiki-mirror.yaml
   - musicbot.yaml
   - tiny-rss.yaml
+  - hortusfox.yaml
