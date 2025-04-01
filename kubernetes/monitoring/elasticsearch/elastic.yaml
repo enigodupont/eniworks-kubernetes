@@ -3,7 +3,7 @@ kind: Elasticsearch
 metadata:
   name: logs
 spec:
-  version: 7.16.2
+  version: 8.17.4
   nodeSets:
   - name: default
     count: 1
@@ -20,7 +20,7 @@ spec:
           - ReadWriteOnce
           resources:
             requests:
-              storage: 15Gi
+              storage: 30Gi
           storageClassName: nfs-client
     config:
       # most Elasticsearch configuration parameters are possible to set, e.g: node.attr.attr_name: attr_value
