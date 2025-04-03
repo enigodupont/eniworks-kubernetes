@@ -22,6 +22,7 @@ resources:
   - infra/ghost.yaml
   - infra/filestash.yaml
   - infra/DirectoryLister.yaml
+  - infra/bluesky-pds.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml

@@ -37,7 +37,7 @@ spec:
               name: sonarqube
               key: password
         - name: SONAR_JDBC_URL
-          value: jdbc:postgresql://toolbox.eniworks.net/sonar
+          value: jdbc:postgresql://toolbox.eniworks.net.internal/sonar
         resources:
           requests:
             memory: '3Gi'

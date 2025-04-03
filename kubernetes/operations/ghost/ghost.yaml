@@ -38,7 +38,7 @@ spec:
             - name: mail__transport
               value: SMTP
             - name: mail__options__host
-              value: toolbox.eniworks.net
+              value: toolbox.eniworks.net.internal
             - name: mail__options__port
               value: '25'
             - name: mail__options__secure

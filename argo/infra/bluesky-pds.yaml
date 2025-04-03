@@ -1,0 +1,55 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bluesky-pds
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: media
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: "registry-1.docker.io"
+    #repoURL: "https://charts.nerkho.ch"
+    targetRevision: 0.4.0
+    chart: enigodupont/bluesky-pds
+    helm:
+      values: |
+        pds:
+          config:
+            logEnabled: 'true'
+            hostname: "pds.eniworks.net"
+            secrets:
+              existingSecret : bluesky-pds-secrets
+            # -- From address for emails sent
+            pdsEmailFromAddress: "admin@pds.eniworks.net"
+          # -- Persistent storage settings
+          dataStorage:
+            # -- How large of a PVC to make
+            size: 10Gi
+            # -- Where to mount the PVC. Make sure it matches pds.config.dataDir!
+            mountPath: "/pds"
+            # -- Storage class to use. Defaults to the cluster default.
+            storageClass: nfs-client
+        securityContext: 
+          runAsUser: 1000
+          runAsGroup: 1000
+        ingress:
+          enabled: true
+          hosts:
+            - host: pds.eniworks.net
+              paths:
+                - path: /
+                  pathType: Prefix
+        resources:
+          limits:
+            cpu: '2'
+            memory: 1Gi
+          requests:
+            cpu: '2'
+            memory: 1Gi
+        livenessProbe:
+          periodSeconds: 60
+          timeoutSeconds: 30
+          failureThreshold: 10
+
