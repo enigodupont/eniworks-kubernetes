@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: "https://charts.jenkins.io"
-    targetRevision: 5.7.21
+    targetRevision: 5.8.32
     chart: jenkins
     helm:
       values: |
@@ -26,12 +26,20 @@ spec:
           admin:
             existingSecret: jenkins
           installPlugins:
-            - kubernetes:3923.v294a_d4250b_91
+            # Jenkins complains about the following after 2025
+            - commons-text-api:1.13.0-153.v91dcd89e2a_22
+            - plugin-util-api:6.0.0
+            - bootstrap5-api:5.3.3-2 
+            - font-awesome-api:6.7.2-1 
+            - eddsa-api:0.3.0.1-19.vc432d923e5ee
+            - git-client:6.1.2
+            # These were here before
+            - kubernetes:4324.vfec199a_33512
             - workflow-aggregator:581.v0c46fa_697ffd
-            - git:5.0.1
-            - configuration-as-code:1850.va_a_8c31d3158b_
+            - git:5.7.0
+            - configuration-as-code:1932.v75cb_b_f1b_698d
             - sonar:2.15
-            - github:1.37.0
+            - github:1.43.0
             - simple-theme-plugin:146.v0e67db_a_9052e
             - cloudbees-disk-usage-simple:203.v3f46a_7462b_1a_
           resources:
@@ -43,6 +51,8 @@ spec:
               memory: "6Gi"
           probes:
             livenessProbe:
-              periodSeconds: 300
+              periodSeconds: 60
+            startupProbe:
+              periodSeconds: 60
 
             
