@@ -17,8 +17,7 @@ spec:
     spec:
       containers:
       - name: musicbot
-        #image: enigodupont/musicbot:latest
-        image: ghcr.io/museofficial/muse:pr-1197
+        image: ghcr.io/museofficial/muse:pr-1248
         imagePullPolicy: Always
         env:
           - name: DISCORD_TOKEN
