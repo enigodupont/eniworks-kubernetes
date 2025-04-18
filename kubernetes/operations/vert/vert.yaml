@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vert
+  labels:
+    app: vert
+spec:
+  replicas: 1
+  serviceName: "vert"
+  selector:
+    matchLabels:
+      app: vert
+  template:
+    metadata:
+      labels:
+        app: vert
+    spec:
+      containers:
+        - name: vert
+          image: ghcr.io/vert-sh/vert:latest
+          env:
+            - name: PUB_HOSTNAME
+              value: vert.eniworks.net
+            - name: PUB_ENV
+              value: production
+            - name: PUB_VERTD_URL
+              value: https://vertd.vert.sh # Public instance, if I run a GPU home server I could replace this
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 80
+              name: ui
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vert
+spec:
+  selector:
+    app: vert
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 80
+      targetPort: 80
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: vert
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`vert.eniworks.net`)
+    kind: Rule
+    services:
+    - name: vert
+      port: 80
+      passHostHeader: true

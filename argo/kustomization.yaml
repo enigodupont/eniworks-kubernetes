@@ -23,6 +23,7 @@ resources:
   - infra/filestash.yaml
   - infra/DirectoryLister.yaml
   - infra/bluesky-pds.yaml
+  - infra/vert.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml
