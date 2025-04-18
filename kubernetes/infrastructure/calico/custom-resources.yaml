@@ -13,10 +13,11 @@ spec:
       blockSize: 26
       cidr: 10.65.0.0/16
       disableBGPExport: false # Set before hand, maybe we can remove?
+      disableNewAllocations: false	# Added for drift
       encapsulation: VXLANCrossSubnet
       natOutgoing: Enabled
       nodeSelector: all()
-      allowedUses:	
+      allowedUses:		# Added for drift
         - Workload	
         - Tunnel
 
