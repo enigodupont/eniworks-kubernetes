@@ -44,3 +44,5 @@ spec:
           value: 'false'
         - name: kubeScheduler.enabled
           value: 'false'
+        - name: grafana.admin.existingSecret
+          value: 'kube-prometheus-stack-grafana'
