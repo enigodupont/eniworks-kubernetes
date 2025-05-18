@@ -60,27 +60,23 @@ spec:
               name: ui
           volumeMounts:
             - mountPath: /var/www/html/public/img
-              name: hortusfox-www-data
+              name: hortusfox-data
               subPath: img
             - mountPath: /var/www/html/app/logs
-              name: hortusfox-www-data
+              name: hortusfox-data
               subPath: logs
             - mountPath: /var/www/html/public/backup
-              name: hortusfox-www-data
+              name: hortusfox-data
               subPath: backup
             - mountPath: /var/www/html/public/themes
-              name: hortusfox-www-data
+              name: hortusfox-data
               subPath: themes
             - mountPath: /var/www/html/app/migrations
-              name: hortusfox-www-data
+              name: hortusfox-data
               subPath: migrations
         - name: hortusfox-mariadb
           image: mariadb:lts
           imagePullPolicy: Always
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            #fsGroup: 1000
           env: 
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
@@ -108,21 +104,14 @@ spec:
               name: db
           volumeMounts:
             - mountPath: /var/lib/mysql
-              name: hortusfox-db-data
+              name: hortusfox-data
+              subPath: database
   volumeClaimTemplates:
     - metadata:
-        name: hortusfox-www-data
+        name: hortusfox-data
       spec:
         accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "nfs-client"
-        resources:
-          requests:
-            storage: 10Gi
-    - metadata:
-        name: hortusfox-db-data
-      spec:
-        accessModes: [ "ReadWriteOnce" ]
-        storageClassName: "nfs-client"
+        storageClassName: freenas-iscsi-csi
         resources:
           requests:
             storage: 10Gi
