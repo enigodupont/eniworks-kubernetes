@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: distributed-llama-root
+  labels:
+    app: distributed-llama-root
+spec:
+  replicas: 1
+  serviceName: distributed-llama-root
+  selector:
+    matchLabels:
+      app: distributed-llama-root
+  template:
+    metadata:
+      labels:
+        app: distributed-llama-root
+    spec:
+      initContainers:
+        - name: downloader
+          image: curlimages/curl:latest
+          securityContext: # Not the best practice, but the main container runs as root today. TODO: Move both containers to a specific user.
+            runAsUser: 0
+            runAsGroup: 0
+          env:
+            - name: FORCE_DOWNLOAD
+              value: "true"  # set to "true" to force download
+          volumeMounts:
+            - name: distributed-llama-root-data
+              mountPath: /models
+          command:
+            - sh
+            - -c
+            - |
+              set -e
+              download() {
+                local url="$1"
+                local dest="$2"
+                if [ "$FORCE_DOWNLOAD" = "true" ] || [ ! -f "$dest" ]; then
+                  echo "Downloading $url to $dest"
+                  curl -fSL "$url" -o "$dest"
+                else
+                  echo "File $dest already exists. Skipping download."
+                fi
+              }
+
+              download "https://huggingface.co/b4rtaz/Llama-3_2-1B-Q40-Instruct-Distributed-Llama/resolve/main/dllama_model_llama3.2-1b-instruct_q40.m?download=true" "/models/dllama_model_llama3.2-1b-instruct_q40.m"
+              download "https://huggingface.co/b4rtaz/Llama-3_1-405B-Q40-Instruct-Distributed-Llama/resolve/main/dllama_tokenizer_llama_3_1.t?download=true" "/models/dllama_tokenizer_llama_3_1.t"
+      containers:
+        - name: distributed-llama-root
+          image: enigodupont/distributed-llama:latest
+          command: 
+            - ./dllama-api
+            - --model # These models need to be downloaded by a sidecar or pre-loaded somehow.
+            - /models/dllama_model_llama3.2-1b-instruct_q40.m 
+            - --tokenizer
+            - /models/dllama_tokenizer_llama_3_1.t 
+            - --buffer-float-type 
+            - q80 
+            - --nthreads 
+            - "1" 
+            - --port 
+            - "5000"
+            - --workers 
+            - distributed-llama-worker-0.distributed-llama-worker-headless.distributed-llama.svc.cluster.local:5000
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 5000
+          volumeMounts:
+            - mountPath: "/models"
+              name: distributed-llama-root-data
+          resources:
+            limits:
+              cpu: '1'
+              memory: 6Gi
+            requests:
+              cpu: '1'
+              memory: 6Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: distributed-llama-root-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: freenas-iscsi-csi
+      resources:
+        requests:
+          storage: 100Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: distributed-llama-root-api
+spec:
+  selector:
+    app: distributed-llama-root
+  ports:
+    - name: api-port
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: distributed-llama-root-api
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`distributed-llama.eniworks.net`)
+    kind: Rule
+    middlewares:
+    - name: distributed-llama-auth
+    services:
+    - name: distributed-llama-root-api
+      port: 5000
+      passHostHeader: true
+---
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: distributed-llama-auth
+spec:
+  basicAuth:
+    secret: distributed-llama-auth

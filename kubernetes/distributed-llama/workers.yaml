@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: distributed-llama-worker
+  labels:
+    app: distributed-llama-worker
+spec:
+  replicas: 1
+  serviceName: distributed-llama-worker-headless
+  selector:
+    matchLabels:
+      app: distributed-llama-worker
+  template:
+    metadata:
+      labels:
+        app: distributed-llama-worker
+    spec:
+      containers:
+        - name: distributed-llama-worker
+          image: enigodupont/distributed-llama:latest
+          command: 
+            - ./dllama
+            - worker
+            - --port 
+            - "5000"
+            - --nthreads 
+            - "1" 
+          imagePullPolicy: Always 
+          ports:
+            - containerPort: 5000
+          resources:
+            limits:
+              cpu: '1'
+              memory: 4Gi
+            requests:
+              cpu: '1'
+              memory: 4Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: distributed-llama-worker-headless
+spec:
+  clusterIP: None  # Headless service
+  selector:
+    app: distributed-llama-worker
+  ports:
+    - port: 5000
+      targetPort: 5000

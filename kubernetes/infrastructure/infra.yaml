@@ -39,3 +39,10 @@ metadata:
   name: poc
   labels:
     name: poc
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: distributed-llama
+  labels:
+    name: distributed-llama

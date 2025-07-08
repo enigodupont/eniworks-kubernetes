@@ -31,3 +31,4 @@ resources:
   - apps/roadtripfinder.yaml
   - apps/smt.yaml
   - apps/logintracker.yaml
+  - distributed-llama/distributed-llama.yaml
