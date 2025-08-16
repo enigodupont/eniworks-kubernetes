@@ -25,6 +25,7 @@ resources:
   - infra/DirectoryLister.yaml
   - infra/bluesky-pds.yaml
   - infra/vert.yaml
+  - infra/open-webui.yaml
   - apps/media.yaml
   - apps/games.yaml
   - apps/dndashboard.yaml

@@ -1,0 +1,76 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui
+  labels:
+    app: open-webui
+spec:
+  replicas: 1
+  serviceName: "open-webui"
+  selector:  
+
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      containers:
+        - name: open-webui
+          image: ghcr.io/open-webui/open-webui:main
+          env:
+            - name: OPENAI_API_BASE_URL
+              value: http://distributed-llama-root-api.distributed-llama:5000/v1
+          imagePullPolicy: Always 
+          resources:
+            requests:
+              memory: '1Gi'
+              cpu: 500m
+            limits:
+              memory: '1Gi'
+              cpu: 500m
+          ports:
+            - containerPort: 8080
+              name: ui
+          volumeMounts:
+            - mountPath: /app/backend/data
+              name: open-webui-data
+  volumeClaimTemplates:
+    - metadata:
+        name: open-webui-data
+      spec:
+        accessModes: [ "ReadWriteOnce" ]
+        storageClassName: "freenas-iscsi-csi"
+        resources:
+          requests:
+            storage: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: open-webui
+spec:
+  selector:
+    app: open-webui
+  ports:
+    - name: ui
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: open-webui
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`open-webui.eniworks.net`)
+    kind: Rule
+    services:
+    - name: open-webui
+      port: 8080
+      passHostHeader: true
