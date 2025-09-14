@@ -18,17 +18,29 @@ spec:
     spec:
       containers:
         - name: open-webui
-          image: ghcr.io/open-webui/open-webui:main
+          image: ghcr.io/open-webui/open-webui:v0.6.28
           env:
             - name: OPENAI_API_BASE_URL
               value: http://distributed-llama-root-api.distributed-llama:5000/v1
+            # Despite using Ollama, we use the openai api instead. 
+            # - name: OLLAMA_BASE_URL
+            #  value: http://distributed-llama-root-api.distributed-llama:5000
+            - name: SCARF_NO_ANALYTICS
+              value: 'true'
+            - name: DO_NOT_TRACK
+              value: 'true'
+            - name: ANONYMIZED_TELEMETRY
+              value: 'false'
+            # TODO: Think about implementing this
+            #- name: WEBUI_SECRET_KEY
+            #  value: your_secret_key
           imagePullPolicy: Always 
           resources:
             requests:
-              memory: '1Gi'
+              memory: '4Gi'
               cpu: 500m
             limits:
-              memory: '1Gi'
+              memory: '4Gi'
               cpu: 500m
           ports:
             - containerPort: 8080
