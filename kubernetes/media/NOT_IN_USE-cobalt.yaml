@@ -1,0 +1,76 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cobalt
+  labels:
+    run: cobalt
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: cobalt
+  template:
+    metadata:
+      labels:
+        run: cobalt
+    spec:
+      containers:
+      - name: cobalt
+        image: ghcr.io/imputnet/cobalt:11
+        imagePullPolicy: Always
+        env:
+          - name: API_URL
+            value: https://cobalt.eniworks.net/
+          #- name: COOKIE_PATH
+          #  value: "/cookies.json"
+        ports:
+          - containerPort: 9000
+            name: ui-port
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: 250m
+          limits:
+            memory: "128Mi"
+            cpu: 250m
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          periodSeconds: 15
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 9000
+          initialDelaySeconds: 60
+          periodSeconds: 60
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cobalt
+spec:
+  selector:
+    run: cobalt
+  ports:
+    - name: ui-port
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+  type: ClusterIP
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: cobalt
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`cobalt.eniworks.net`)
+    kind: Rule
+    services:
+    - name: cobalt
+      port: 9000
+      passHostHeader: true
