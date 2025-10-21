@@ -27,7 +27,7 @@ spec:
             existingSecret: jenkins
           installPlugins:
             # Jenkins complains about the following after 2025
-            - commons-text-api:1.13.1-176.v74d88f22034b_
+            - commons-text-api:1.14.0-194.v804a_dc3a_1b_d8
             - plugin-util-api:6.1167.v022176c7e0ca_
             - bootstrap5-api:5.3.7-860.v1251c115c90c
             - font-awesome-api:7.0.0-851.vd1feb_218a_a_63
