@@ -55,7 +55,7 @@ spec:
           enabled: false
         synapse:
           image:
-            tag: v1.129.0 # Latest is 1.140.0
+            tag: v1.140.0
           resources:
             requests:
               cpu: 250m
