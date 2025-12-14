@@ -18,6 +18,7 @@ resources:
   - infra/matrix.yaml
   - infra/matrix-addons.yaml
   - infra/jenkins.yaml
+  - infra/version-checker.yaml
   - infra/sonarqube.yaml
   - infra/umami.yaml
   - infra/ghost.yaml
