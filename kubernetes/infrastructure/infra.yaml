@@ -46,3 +46,10 @@ metadata:
   name: distributed-llama
   labels:
     name: distributed-llama
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: booklore
+  labels:
+    name: booklore

@@ -1,0 +1,103 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: booklore-data
+  namespace: booklore
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: freenas-iscsi-csi
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booklore
+  namespace: booklore
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booklore
+  template:
+    metadata:
+      labels:
+        app: booklore
+    spec:
+      containers:
+        - name: booklore
+          image: booklore/booklore:latest
+          ports:
+            - containerPort: 6060
+          env:
+            - name: USER_ID
+              value: "0"
+            - name: GROUP_ID
+              value: "0"
+            - name: TZ
+              value: "America/Chicago"
+            - name: DATABASE_URL
+              value: "jdbc:mariadb://mariadb.booklore.svc.cluster.local:3306/booklore"
+            - name: DATABASE_USERNAME
+              value: "booklore"
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booklore-secrets
+                  key: mariadb-password
+            - name: BOOKLORE_PORT
+              value: "6060"
+            - name: SWAGGER_ENABLED
+              value: "false"
+            - name: FORCE_DISABLE_OIDC
+              value: "false"
+          volumeMounts:
+            # Main app data
+            - name: booklore-data
+              mountPath: /app/data
+              subPath: data
+            # Books library
+            - name: booklore-data
+              mountPath: /books
+              subPath: books
+            # Bookdrop
+            - name: booklore-data
+              mountPath: /bookdrop
+              subPath: bookdrop
+      volumes:
+        - name: booklore-data
+          persistentVolumeClaim:
+            claimName: booklore-data
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booklore
+  namespace: booklore
+spec:
+  type: ClusterIP
+  selector:
+    app: booklore
+  ports:
+    - port: 80
+      targetPort: 6060
+      protocol: TCP
+      name: http
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: booklore
+  namespace: booklore
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`booklore.eniworks.net`)
+    kind: Rule
+    services:
+    - name: booklore
+      port: 80
+      passHostHeader: true

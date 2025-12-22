@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: mariadb
+  namespace: booklore
+spec:
+  clusterIP: None
+  selector:
+    app: mariadb
+  ports:
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  namespace: booklore
+spec:
+  selector:
+    matchLabels:
+      app: mariadb
+  serviceName: mariadb
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mariadb
+    spec:
+      containers:
+        - name: mariadb
+          image: lscr.io/linuxserver/mariadb:11.4.8
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booklore-secrets
+                  key: mariadb-root-password
+            - name: MYSQL_DATABASE
+              value: "booklore"
+            - name: MYSQL_USER
+              value: "booklore"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: booklore-secrets
+                  key: mariadb-password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mariadb-data
+              mountPath: /config
+  volumeClaimTemplates:
+    - metadata:
+        name: mariadb-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: freenas-iscsi-csi
+        resources:
+          requests:
+            storage: 10Gi

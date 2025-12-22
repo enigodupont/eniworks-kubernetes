@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - infra/argo.yaml
+  - infra/booklore.yaml
   - infra/calico.yaml
   - infra/democratic-csi.yaml
   - infra/eniworks.yaml
