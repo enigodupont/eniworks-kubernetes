@@ -21,6 +21,8 @@ spec:
                 image:
                   tag: v2.4.1
                 env:
+                  TZ: "America/Chicago"
+                  DB_STORAGE_TYPE: HDD
                   DB_HOSTNAME:
                     valueFrom:
                       secretKeyRef:
@@ -52,7 +54,7 @@ spec:
               smtp:
                 enabled: true
                 from: "immich.eniworks.net"
-                reployTo: "juramir@protonmail.com"
+                replyTo: "juramir@protonmail.com"
                 transport:
                   host: toolbox.eniworks.net
                   port: 25
