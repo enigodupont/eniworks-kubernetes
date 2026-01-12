@@ -24,6 +24,9 @@ resources:
   - infra/umami.yaml
   - infra/ghost.yaml
   - infra/filestash.yaml
+  - infra/immich.yaml
+  - infra/immich-addons.yaml
+  - infra/cloudnative-pg.yaml
   - infra/DirectoryLister.yaml
   - infra/bluesky-pds.yaml
   - infra/vert.yaml

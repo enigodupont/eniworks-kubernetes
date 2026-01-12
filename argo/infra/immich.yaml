@@ -1,0 +1,84 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: immich
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: immich
+    server: https://kubernetes.default.svc
+  source:
+    chart: immich
+    repoURL: "ghcr.io/immich-app/immich-charts"
+    targetRevision: 0.10.3
+    helm:
+      values: |
+        controllers:
+          main:
+            containers:
+              main:
+                image:
+                  tag: v2.4.1
+                env:
+                  DB_HOSTNAME:
+                    valueFrom:
+                      secretKeyRef:
+                        name: immich-database-app
+                        key: host
+                  DB_USERNAME:
+                    valueFrom:
+                      secretKeyRef:
+                        name: immich-database-app
+                        key: user
+                  DB_PASSWORD:
+                    valueFrom:
+                      secretKeyRef:
+                        name: immich-database-app
+                        key: password
+                  DB_DATABASE_NAME:
+                    valueFrom:
+                      secretKeyRef:
+                        name: immich-database-app
+                        key: dbname
+
+        immich:
+          metrics:
+            enabled: true
+          configuration:
+            server:
+              externalDomain: https://immich.eniworks.net
+            notifications:
+              smtp:
+                enabled: true
+                from: "immich.eniworks.net"
+                reployTo: "juramir@protonmail.com"
+                transport:
+                  host: toolbox.eniworks.net
+                  port: 25
+          persistence:
+            library:
+              existingClaim: immich-library-pvc
+        valkey:
+          enabled: true
+          persistence:
+            data:
+              type: persistentVolumeClaim
+              storageClass: freenas-iscsi-csi
+        server:
+          ingress:
+            main:
+              enabled: true # Change this
+              hosts:
+                - host: immich.eniworks.net
+                  paths:
+                    - path: "/"
+                      service:
+                        identifier: main
+              tls: []
+        machine-learning:
+          persistence:
+            cache:
+              accessMode: ReadWriteOnce
+              type: persistentVolumeClaim
+              storageClass: freenas-iscsi-csi
