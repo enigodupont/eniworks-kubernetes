@@ -77,6 +77,11 @@ spec:
                     - path: "/"
                       service:
                         identifier: main
+                - host: internal-immich.eniworks.net
+                  paths:
+                    - path: "/"
+                      service:
+                        identifier: main
               tls: []
         machine-learning:
           persistence:
