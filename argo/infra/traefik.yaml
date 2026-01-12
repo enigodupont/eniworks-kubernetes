@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: 'https://helm.traefik.io/traefik'
-    targetRevision: 37.1.1
+    targetRevision: 38.0.2
     chart: traefik
     helm:
       parameters:
@@ -48,3 +48,9 @@ spec:
           value: '--providers.kubernetesingress.ingressendpoint.hostname=eniworks.net'
         - name: additionalArguments[2]
           value: '--entryPoints.web.forwardedHeaders.insecure'
+        - name: additionalArguments[3]
+          value: '--entrypoints.web.transport.respondingtimeouts.readtimeout=3600s'
+        - name: additionalArguments[4]
+          value: '--entrypoints.web.transport.respondingtimeouts.writetimeout=3600s'
+        - name: additionalArguments[5]
+          value: '--entrypoints.web.transport.respondingtimeouts.idletimeout=3600s'
