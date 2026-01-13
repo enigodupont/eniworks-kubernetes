@@ -54,3 +54,9 @@ spec:
           value: '--entrypoints.web.transport.respondingtimeouts.writetimeout=3600s'
         - name: additionalArguments[5]
           value: '--entrypoints.web.transport.respondingtimeouts.idletimeout=3600s'
+        - name: additionalArguments[6]
+          value: '--serversTransport.forwardingTimeouts.dialTimeout=30s'
+        - name: additionalArguments[7]
+          value: '--serversTransport.forwardingTimeouts.responseHeaderTimeout=1h'
+        - name: additionalArguments[8]
+          value: '--serversTransport.forwardingTimeouts.idleConnTimeout=1h'
