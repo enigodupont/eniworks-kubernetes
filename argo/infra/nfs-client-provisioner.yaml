@@ -20,4 +20,4 @@ spec:
           mountOptions:
             - nfsvers=3
         storageClass:
-          defaultClass: true
+          defaultClass: false
