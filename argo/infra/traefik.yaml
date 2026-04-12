@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: 'https://helm.traefik.io/traefik'
-    targetRevision: 38.0.2
+    targetRevision: 40.0.0-ea.3
     chart: traefik
     helm:
       parameters:
@@ -28,7 +28,7 @@ spec:
           value: 'json'
         - name: logs.access.fields.headers.defaultmode
           value: 'keep'
-        - name: service.type
+        - name: service.spec.type
           value: NodePort
         - name: ingressClass.enabled
           value: 'true'
