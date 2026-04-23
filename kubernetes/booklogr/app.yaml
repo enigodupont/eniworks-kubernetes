@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booklogr
+  namespace: booklogr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: booklogr
+  template:
+    metadata:
+      labels:
+        app: booklogr
+    spec:
+      containers:
+        - name: booklogr-api
+          image: mozzo/booklogr:v1.9.0
+          ports:
+            - containerPort: 5000
+          env:
+            - name: AUTH_ALLOW_REGISTRATION
+              value: "false"
+            - name: AUTH_REQUIRE_VERIFICATION
+              value: "false"
+            - name: SINGLE_USER_MODE
+              value: "false"
+            - name: MAIL_SERVER
+              value: "toolbox.eniworks.net.internal"
+            - name: MAIL_SENDER
+              value: "booklogr@eniworks.net"
+            - name: AUTH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: booklogr-secrets
+                  key: auth_key
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: booklogr-secrets
+                  key: db_url
+        - name: booklogr-web
+          image: mozzo/booklogr-web:v1.9.0
+          ports:
+            - containerPort: 80
+          env:
+            - name: BL_DEMO_MODE
+              value: "false"
+            - name: BL_API_ENDPOINT
+              value: "https://booklogr-api.eniworks.net/"
+            - name: BL_GOOGLE_ID
+              value: ""
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booklogr
+  namespace: booklogr
+spec:
+  type: ClusterIP
+  selector:
+    app: booklogr
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: web
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
+      name: api
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: booklogr
+  namespace: booklogr
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: Host(`booklogr.eniworks.net`)
+    kind: Rule
+    services:
+    - name: booklogr
+      port: 80
+      passHostHeader: true
+  - match: Host(`booklogr-api.eniworks.net`)
+    kind: Rule
+    services:
+    - name: booklogr
+      port: 5000
+      passHostHeader: true
