@@ -83,7 +83,7 @@ spec:
       containers:
       - name: recipes-nginx
         image: nginx:latest
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         ports:
           - containerPort: 80
             protocol: TCP
@@ -110,7 +110,7 @@ spec:
             readOnly: true
       - name: recipes
         image: vabene1111/recipes
-        imagePullPolicy: IfNotPresent
+        imagePullPolicy: Always
         command:
           - /opt/recipes/venv/bin/gunicorn
           - -b
@@ -140,10 +140,10 @@ spec:
           failureThreshold: 10
         resources:
           limits:
-            cpu: 500m
+            cpu: 600m
             memory: 512Mi
           requests:
-            cpu: 500m
+            cpu: 600m
             memory: 512Mi
         volumeMounts:
           - mountPath: /opt/recipes/mediafiles
