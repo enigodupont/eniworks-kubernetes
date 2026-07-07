@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: "registry-1.docker.io"
     #repoURL: "https://charts.nerkho.ch"
-    targetRevision: 0.4.0
+    targetRevision: 0.4.2
     chart: enigodupont/bluesky-pds
     helm:
       values: |

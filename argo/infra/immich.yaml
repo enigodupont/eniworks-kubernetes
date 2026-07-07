@@ -11,15 +11,16 @@ spec:
   source:
     chart: immich
     repoURL: "ghcr.io/immich-app/immich-charts"
-    targetRevision: 0.11.1
+    targetRevision: 0.13.1
     helm:
       values: |
         controllers:
           main:
+            strategy: Recreate
             containers:
               main:
                 image:
-                  tag: v2.7.5
+                  tag: v3.0.0
                 env:
                   TZ: "America/Chicago"
                   DB_STORAGE_TYPE: HDD
@@ -65,8 +66,10 @@ spec:
           enabled: true
           persistence:
             data:
+              accessMode: ReadWriteOnce
               type: persistentVolumeClaim
               storageClass: freenas-iscsi-csi
+              size: 1Gi
         server:
           ingress:
             main:
@@ -89,3 +92,4 @@ spec:
               accessMode: ReadWriteOnce
               type: persistentVolumeClaim
               storageClass: freenas-iscsi-csi
+              size: 10Gi
