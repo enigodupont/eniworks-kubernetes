@@ -4,7 +4,7 @@ metadata:
   name: booklogr
   namespace: booklogr
 spec:
-  replicas: 1
+  replicas: 0 # Disabled until it supports no ipv6 
   selector:
     matchLabels:
       app: booklogr

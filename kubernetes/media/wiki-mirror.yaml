@@ -19,6 +19,7 @@ spec:
         - name: wiki-mirror
           image: ghcr.io/kiwix/kiwix-serve:3.8.1
           args:
+            - --address ipv4
             - allthetropes_en_all_maxi_2020-11.zim
             - westeros_en_all_2018-10.zim
             - wikem_en_all_maxi_2021-02.zim
