@@ -10,7 +10,7 @@ spec:
     server: https://kubernetes.default.svc
   source:
     repoURL: 'https://helm.traefik.io/traefik'
-    targetRevision: 40.0.0-ea.3
+    targetRevision: 41.4.0
     chart: traefik
     helm:
       parameters:
@@ -20,14 +20,6 @@ spec:
           value: 'true'
         - name: podDisruptionBudget.maxUnavailable
           value: '1'
-        #- name: logs.general.level
-        #  value: 'DEBUG'
-        - name: logs.access.enabled
-          value: 'true'
-        - name: logs.access.format
-          value: 'json'
-        - name: logs.access.fields.headers.defaultmode
-          value: 'keep'
         - name: service.spec.type
           value: NodePort
         - name: ingressClass.enabled
