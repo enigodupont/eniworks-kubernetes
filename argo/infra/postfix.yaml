@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postfix
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: operations
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: "https://bokysan.github.io/docker-postfix/"
+    targetRevision: v5.1.0
+    chart: mail
+    helm:
+      values: |
+        metrics:
+          enabled: false # Fails in the latest version, https://github.com/bokysan/docker-postfix/issues/278
+          serviceMonitor:
+            enabled: true
+        persistence:
+          enabled: false
+        config:
+          general:
+            ALLOW_EMPTY_SENDER_DOMAINS: 'yes'
+        service:
+          type: LoadBalancer
+          port: 25
+          annotations:
+            metallb.io/loadBalancerIPs: "10.64.0.22"
+          spec: {}
+          externalTrafficPolicy: Cluster

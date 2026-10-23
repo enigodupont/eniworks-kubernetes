@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: metallb
+    server: https://kubernetes.default.svc
+  source:
+    repoURL: "https://metallb.github.io/metallb"
+    targetRevision: 0.16.1
+    chart: metallb
+    helm:
+      values: |
+        prometheus:
+          rbacPrometheus: false
+          podMonitor:
+            enabled: true

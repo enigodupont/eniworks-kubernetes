@@ -18,6 +18,9 @@ resources:
   #- infra/docker-registry.yaml
   - infra/matrix.yaml
   - infra/matrix-addons.yaml
+  - infra/metallb.yaml
+  - infra/metallb-addons.yaml
+  - infra/postfix.yaml
   - infra/jenkins.yaml
   - infra/version-checker.yaml
   - infra/sonarqube.yaml
