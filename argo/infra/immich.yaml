@@ -58,7 +58,7 @@ spec:
                 from: "immich.eniworks.net"
                 replyTo: "juramir@protonmail.com"
                 transport:
-                  host: toolbox.eniworks.net.internal
+                  host: mail.eniworks.net.internal
                   port: 25
           persistence:
             library:

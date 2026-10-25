@@ -21,7 +21,7 @@ spec:
       values: |
         postgresql:
           enabled: false
-          hostname: 10.64.0.6
+          hostname: towerofbabel.eniworks.net.internal
           auth:
             username: matrix
             password: not_real_value_wont_work_override
@@ -39,7 +39,7 @@ spec:
             synapse: matrix.eniworks.net
         mail:
           external:
-            host: '10.64.0.6'
+            host: 'mail.eniworks.net.internal'
             requireTransportSecurity: false
         matrix:
           serverName: eniworks.net

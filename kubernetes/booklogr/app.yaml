@@ -26,7 +26,7 @@ spec:
             - name: SINGLE_USER_MODE
               value: "false"
             - name: MAIL_SERVER
-              value: "toolbox.eniworks.net.internal"
+              value: "mail.eniworks.net.internal"
             - name: MAIL_SENDER
               value: "booklogr@eniworks.net"
             - name: AUTH_SECRET_KEY
