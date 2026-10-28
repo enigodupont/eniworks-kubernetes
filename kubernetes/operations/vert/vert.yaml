@@ -5,7 +5,7 @@ metadata:
   labels:
     app: vert
 spec:
-  replicas: 0 # Disabled until it supports no IPV6
+  replicas: 1
   serviceName: "vert"
   selector:
     matchLabels:
@@ -19,7 +19,6 @@ spec:
         - name: vert
           image: ghcr.io/vert-sh/vert:latest
           env:
-            - name: 
             - name: PUB_HOSTNAME
               value: vert.eniworks.net
             - name: PUB_ENV
