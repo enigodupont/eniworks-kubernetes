@@ -5,6 +5,7 @@ resources:
   - infra/argo.yaml
   - infra/calico.yaml
   - infra/democratic-csi.yaml
+  - infra/diun.yaml
   - infra/eniworks.yaml
   - infra/nfs-client-provisioner.yaml
   - infra/kube-prometheus-stack.yaml
