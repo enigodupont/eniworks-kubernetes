@@ -71,14 +71,19 @@ spec:
               value: "true"
             - name: DIUN_PROVIDERS_KUBERNETES_WATCHBYDEFAULT
               value: "true"
-            - name: DIUN_NOTIF_MAIL_HOST
-              value: "mail.eniworks.net.internal"
-            - name: DIUN_NOTIF_MAIL_PORT
-              value: "25"
-            - name: DIUN_NOTIF_MAIL_FROM
-              value: "diun@eniworks.net"
-            - name: DIUN_NOTIF_MAIL_TO
-              value: "juramir@protonmail.com"
+            # Mail sends an event each, kinda sucks
+            # - name: DIUN_NOTIF_MAIL_HOST
+            #   value: "mail.eniworks.net.internal"
+            # - name: DIUN_NOTIF_MAIL_PORT
+            #   value: "25"
+            # - name: DIUN_NOTIF_MAIL_FROM
+            #   value: "diun@eniworks.net"
+            # - name: DIUN_NOTIF_MAIL_TO
+            #   value: "juramir@protonmail.com"
+            # - name: DIUN_NOTIF_MAIL_INSECURESKIPVERIFY
+            #   value: "true"
+            # - name: DIUN_NOTIF_MAIL_SSL
+            #   value: "false"
           volumeMounts:
             - mountPath: "/data"
               name: "data"
